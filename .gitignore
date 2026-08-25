@@ -56,3 +56,6 @@ oracle-instantclient-precomp-*.rpm
 
 .vscode/*
 !.vscode/settings.json
+
+# Java build
+target/
