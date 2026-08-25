@@ -1,4 +1,4 @@
-CREATE OR REPLACE PROCEDURE drop_sequence_if_exists(
+CREATE OR REPLACE PROCEDURE drop_table_if_exists(
     table_name IN VARCHAR2
 ) IS
 BEGIN
@@ -9,8 +9,9 @@ EXCEPTION
             RAISE;
         END IF;
 END;
+/
 
-CREATE OR REPLACE PROCEDURE drop_table_if_exists(
+CREATE OR REPLACE PROCEDURE drop_sequence_if_exists(
     sequence_name IN VARCHAR2
 ) IS
 BEGIN
@@ -21,3 +22,4 @@ EXCEPTION
             RAISE;
         END IF;
 END;
+/
