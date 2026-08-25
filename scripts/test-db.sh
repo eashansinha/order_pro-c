@@ -26,7 +26,7 @@ counts="$(docker run --rm --network host oracle-proc bash -c "
     echo 'EXIT'; } | sqlplus -s '$CONN'
 ")"
 
-grep -q "TABLES=6" <<<"$counts" && echo "PASS: 6 tables exist" || { echo "FAIL: expected 6 tables"; echo "$counts"; fail=1; }
-grep -q "SEQUENCES=6" <<<"$counts" && echo "PASS: 6 sequences exist" || { echo "FAIL: expected 6 sequences"; echo "$counts"; fail=1; }
+grep -qE "^TABLES=6$" <<<"$counts" && echo "PASS: 6 tables exist" || { echo "FAIL: expected 6 tables"; echo "$counts"; fail=1; }
+grep -qE "^SEQUENCES=6$" <<<"$counts" && echo "PASS: 6 sequences exist" || { echo "FAIL: expected 6 sequences"; echo "$counts"; fail=1; }
 
 exit $fail
