@@ -27,10 +27,15 @@ public class ShopServiceImpl implements ShopService {
     this.scanner = scanner;
   }
 
+  /** Mirrors the C fixed-size VARCHAR buffers, which clipped input to the column width. */
+  private static String truncate(String value, int maxLength) {
+    return value.length() > maxLength ? value.substring(0, maxLength) : value;
+  }
+
   @Override
   public int registerShop() {
     System.out.printf("가게 이름을 입력하세요: ");
-    String title = scanner.nextLine();
+    String title = truncate(scanner.nextLine(), 20);
     if (title.isEmpty()) {
       System.out.printf("가게 이름을 입력하세요.\n");
       return -1011;
@@ -103,7 +108,7 @@ public class ShopServiceImpl implements ShopService {
   @Override
   public int createShopMenu() {
     System.out.printf("메뉴 이름을 입력하세요: ");
-    String title = scanner.nextLine();
+    String title = truncate(scanner.nextLine(), 20);
     if (title.isEmpty()) {
       System.out.printf("메뉴 이름을 입력하세요.\n");
       return -2011;
@@ -113,7 +118,7 @@ public class ShopServiceImpl implements ShopService {
     long price = Integer.toUnsignedLong(Integer.parseUnsignedInt(scanner.nextLine().trim()));
 
     System.out.printf("설명을 입력하세요: ");
-    String description = scanner.nextLine();
+    String description = truncate(scanner.nextLine(), 100);
 
     try (PreparedStatement stmt = connection.prepareStatement(
         "INSERT INTO menus(menu_id, shop_id, title, price, description) "

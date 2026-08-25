@@ -151,6 +151,18 @@ class ShopServiceImplTest {
   }
 
   @Test
+  void registerShopTruncatesTitleToColumnWidth() {
+    FakeDb db = new FakeDb();
+    Session session = new Session();
+    session.getUser().setUserId(7);
+    String longTitle = "a".repeat(25);
+    ShopServiceImpl service = new ShopServiceImpl(db.connection(), session, input(longTitle + "\n"));
+
+    assertEquals(0, service.registerShop());
+    assertEquals("a".repeat(20), db.params.get(2));
+  }
+
+  @Test
   void readShopsFromOwnerPrintsHeaderRowsAndTotal() {
     FakeDb db = new FakeDb();
     db.rows.add(Map.of("shop_id", 1, "title", "A"));
