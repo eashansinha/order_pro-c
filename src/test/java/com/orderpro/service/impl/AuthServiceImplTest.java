@@ -8,6 +8,10 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import com.orderpro.model.Shop;
 import com.orderpro.model.User;
 import com.orderpro.session.Session;
+import java.lang.reflect.Proxy;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.util.List;
 import java.util.Scanner;
 import org.junit.jupiter.api.Test;
@@ -70,6 +74,43 @@ class AuthServiceImplTest {
   @Test
   void signInEmptyPasswordReturnsMinus212() {
     assertEquals(-212, service(new Session(), "alice\n\n").signIn());
+  }
+
+  @Test
+  void signInNoMatchingUserReturnsMinus213WithoutExiting() {
+    Session session = new Session();
+    AuthServiceImpl service =
+        new AuthServiceImpl(emptyResultConnection(), session, new Scanner("alice\nwrongpw\n"));
+    assertEquals(-213, service.signIn());
+    assertFalse(session.isAuthorized());
+  }
+
+  /** Connection whose queries always return an empty ResultSet. */
+  private static Connection emptyResultConnection() {
+    ResultSet rs = (ResultSet) Proxy.newProxyInstance(
+        AuthServiceImplTest.class.getClassLoader(), new Class<?>[] {ResultSet.class},
+        (proxy, method, args) -> switch (method.getName()) {
+          case "next" -> false;
+          case "hashCode" -> System.identityHashCode(proxy);
+          case "equals" -> proxy == args[0];
+          default -> null;
+        });
+    PreparedStatement ps = (PreparedStatement) Proxy.newProxyInstance(
+        AuthServiceImplTest.class.getClassLoader(), new Class<?>[] {PreparedStatement.class},
+        (proxy, method, args) -> switch (method.getName()) {
+          case "executeQuery" -> rs;
+          case "hashCode" -> System.identityHashCode(proxy);
+          case "equals" -> proxy == args[0];
+          default -> null;
+        });
+    return (Connection) Proxy.newProxyInstance(
+        AuthServiceImplTest.class.getClassLoader(), new Class<?>[] {Connection.class},
+        (proxy, method, args) -> switch (method.getName()) {
+          case "prepareStatement" -> ps;
+          case "hashCode" -> System.identityHashCode(proxy);
+          case "equals" -> proxy == args[0];
+          default -> null;
+        });
   }
 
   // --- SignOut ---

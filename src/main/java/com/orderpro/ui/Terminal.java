@@ -36,10 +36,8 @@ public final class Terminal {
    * Falls back to waiting for a line if raw mode is unavailable.
    */
   public static boolean keyHit() {
-    String[] cmd = {"/bin/sh", "-c", "stty raw -echo < /dev/tty"};
-    String[] restore = {"/bin/sh", "-c", "stty sane < /dev/tty"};
     try {
-      Runtime.getRuntime().exec(cmd).waitFor();
+      stty("raw -echo");
       int ch = System.in.read();
       return ch != -1;
     } catch (IOException | InterruptedException e) {
@@ -53,11 +51,19 @@ public final class Terminal {
       return true;
     } finally {
       try {
-        Runtime.getRuntime().exec(restore).waitFor();
+        stty("sane");
       } catch (IOException | InterruptedException ignored) {
         // best effort
       }
     }
+  }
+
+  /** Runs stty with inherited stdio so no pipe file descriptors are leaked. */
+  private static void stty(String mode) throws IOException, InterruptedException {
+    new ProcessBuilder("/bin/sh", "-c", "stty " + mode + " < /dev/tty")
+        .inheritIO()
+        .start()
+        .waitFor();
   }
 
   /** Discards the rest of the current input line (like __fpurge(stdin)). */

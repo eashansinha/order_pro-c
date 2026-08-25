@@ -135,9 +135,8 @@ public class AuthServiceImpl implements AuthService {
       ps.setString(2, password);
       try (ResultSet rs = ps.executeQuery()) {
         if (!rs.next()) {
-          Database.sqlError("ORACLE error--",
-              new SQLException("ORA-01403: no data found", "02000", 1403));
-          return -1; // unreachable: sqlError exits
+          System.out.print("아이디 또는 비밀번호가 일치하지 않습니다.\n");
+          return -213;
         }
         User user = session.getUser();
         user.setUserId(rs.getInt("user_id"));
