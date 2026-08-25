@@ -37,38 +37,43 @@ public class AuthServiceImpl implements AuthService {
     return scanner.hasNextLine() ? scanner.nextLine() : "";
   }
 
+  /** Mirrors the C fixed-size VARCHAR buffers, which clipped input to the column width. */
+  static String truncate(String value, int maxLength) {
+    return value.length() > maxLength ? value.substring(0, maxLength) : value;
+  }
+
   @Override
   public int signUp() {
     System.out.print("아이디를 입력하세요: ");
-    String username = readLine();
+    String username = truncate(readLine(), 20);
     if (username.isEmpty()) {
       System.out.print("아이디를 입력하세요.\n");
       return -201;
     }
 
     System.out.print("비밀번호를 입력하세요: ");
-    String password = readLine();
+    String password = truncate(readLine(), 40);
     if (password.isEmpty()) {
       System.out.print("비밀번호를 입력하세요.\n");
       return -202;
     }
 
     System.out.print("비밀번호를 한 번 더 입력하세요: ");
-    String passwordConfirm = readLine();
+    String passwordConfirm = truncate(readLine(), 40);
     if (!password.equals(passwordConfirm)) {
       System.out.print("비밀번호가 일치하지 않습니다.\n");
       return -202;
     }
 
     System.out.print("전화번호를 입력하세요: ");
-    String phoneNumber = readLine();
+    String phoneNumber = truncate(readLine(), 14);
     if (phoneNumber.isEmpty()) {
       System.out.print("전화번호를 입력하세요.\n");
       return -203;
     }
 
     System.out.print("주소를 입력하세요: ");
-    String address = readLine();
+    String address = truncate(readLine(), 80);
     if (address.isEmpty()) {
       System.out.print("주소를 입력하세요.\n");
       return -204;
@@ -164,10 +169,10 @@ public class AuthServiceImpl implements AuthService {
     List<String> values = new ArrayList<>();
 
     System.out.print("비밀번호를 입력하세요: ");
-    String password = readLine();
+    String password = truncate(readLine(), 40);
     if (!password.isEmpty()) {
       System.out.print("비밀번호를 한 번 더 입력하세요: ");
-      String passwordConfirm = readLine();
+      String passwordConfirm = truncate(readLine(), 40);
       if (!password.equals(passwordConfirm)) {
         System.out.print("비밀번호가 일치하지 않습니다.\n");
         return -1002;
@@ -177,14 +182,14 @@ public class AuthServiceImpl implements AuthService {
     }
 
     System.out.print("전화번호를 입력하세요: ");
-    String phoneNumber = readLine();
+    String phoneNumber = truncate(readLine(), 14);
     if (!phoneNumber.isEmpty()) {
       setClauses.add("phone_number = ?");
       values.add(phoneNumber);
     }
 
     System.out.print("주소를 입력하세요: ");
-    String address = readLine();
+    String address = truncate(readLine(), 80);
     if (!address.isEmpty()) {
       setClauses.add("address = ?");
       values.add(address);

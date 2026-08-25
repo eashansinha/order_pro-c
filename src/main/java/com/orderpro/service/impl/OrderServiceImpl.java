@@ -165,7 +165,7 @@ public class OrderServiceImpl implements OrderService {
         try (ResultSet rs = stmt.executeQuery()) {
           while (rs.next()) {
             System.out.printf("%10d %10s %10d %10s%n", rs.getInt("order_id"),
-                rs.getString("title"), rs.getInt("amount"), rs.getString("ordered_at"));
+                rs.getString("title"), rs.getLong("amount"), rs.getString("ordered_at"));
             rows++;
           }
         }
@@ -185,7 +185,7 @@ public class OrderServiceImpl implements OrderService {
         try (ResultSet rs = stmt.executeQuery()) {
           while (rs.next()) {
             System.out.printf("%10s %10d %10d %10d%n", rs.getString("title"),
-                rs.getInt("price"), rs.getInt("quantity"), rs.getInt("subtotal"));
+                rs.getLong("price"), rs.getInt("quantity"), rs.getLong("subtotal"));
           }
         }
       }

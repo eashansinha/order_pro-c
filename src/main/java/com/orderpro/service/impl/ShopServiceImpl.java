@@ -149,7 +149,7 @@ public class ShopServiceImpl implements ShopService {
           System.out.printf("%10d %10s %10d %20s\n",
               rs.getInt("menu_id"),
               rs.getString("title"),
-              Integer.toUnsignedLong(rs.getInt("price")),
+              rs.getLong("price"),
               rs.getString("description"));
           total++;
         }

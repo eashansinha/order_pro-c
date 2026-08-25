@@ -106,6 +106,8 @@ class ShopServiceImplTest {
                 return index[0] < rows.size();
               case "getInt":
                 return ((Number) rows.get(index[0]).get(args[0])).intValue();
+              case "getLong":
+                return ((Number) rows.get(index[0]).get(args[0])).longValue();
               case "getString":
                 return (String) rows.get(index[0]).get(args[0]);
               case "close":

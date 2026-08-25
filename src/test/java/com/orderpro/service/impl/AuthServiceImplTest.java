@@ -51,6 +51,15 @@ class AuthServiceImplTest {
         service(new Session(), "alice\npw\npw\n010-1234\nSeoul\nxyz\n").signUp());
   }
 
+  // --- Column-width clipping (mirrors C fixed-size VARCHAR buffers) ---
+
+  @Test
+  void truncateClipsToColumnWidth() {
+    assertEquals("a".repeat(20), AuthServiceImpl.truncate("a".repeat(25), 20));
+    assertEquals("short", AuthServiceImpl.truncate("short", 20));
+    assertEquals("", AuthServiceImpl.truncate("", 20));
+  }
+
   // --- SignIn validation return codes ---
 
   @Test
